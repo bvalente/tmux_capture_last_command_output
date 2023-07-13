@@ -2,7 +2,10 @@
 
 x=$(tmux capture-pane -p -S '-' -J -t !)
 PROMPT_PATTERN=${PROMPT_PATTERN:-" ] % "}
-result=$(echo "$x" | tac | gsed -e "0,/$PROMPT_PATTERN/d" | gsed "/$PROMPT_PATTERN/,\$d" | tac)
+# tac inverts the text upside down
+# sed select everything from the second line (skip current prompt) until the next prompt inclusive
+# tac to invert back
+result=$(echo "$x" | tac | gsed -n "2,/$PROMPT_PATTERN/p" | tac)
 
 EDITOR_CMD=${EDITOR_CMD:-"$EDITOR -"}
 
